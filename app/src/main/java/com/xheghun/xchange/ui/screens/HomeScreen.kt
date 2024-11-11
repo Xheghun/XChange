@@ -2,6 +2,7 @@ package com.xheghun.xchange.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.xheghun.xchange.R
 import com.xheghun.xchange.data.model.Currency
+import com.xheghun.xchange.ui.theme.OpenSans
 import com.xheghun.xchange.ui.theme.colorBackground
 import com.xheghun.xchange.ui.theme.colorBlue
 import com.xheghun.xchange.ui.theme.colorGray
@@ -73,21 +76,54 @@ fun HomeScreen(navController: NavController) {
                 .background(Color.White)
                 .weight(5f)
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(15.dp)
         ) {
             val baseCurrency = Currency()
             val exchangeCurrency = Currency("GBP")
             Text("Amount", color = colorGray)
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(vertical = 10.dp)
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_launcher_background),
                     contentDescription = "base currency image",
-                    modifier = Modifier.clip(CircleShape).size(40.dp)
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .size(40.dp)
                 )
-                Text(text = baseCurrency.code)
+                Box(Modifier.width(6.dp))
+                Text(
+                    text = baseCurrency.code,
+                    color = colorBlue,
+                    fontSize = 18.sp,
+                    style = TextStyle(fontFamily = OpenSans, fontWeight = FontWeight.Medium)
+                )
                 Icon(Icons.Default.KeyboardArrowDown, contentDescription = "")
+                Box(Modifier.width(6.dp))
+            }
 
+            Box(Modifier.fillMaxWidth()) {
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center)
+                        .height(1.dp)
+                        .background(Color.LightGray)
+                )
+
+                Image(
+                    modifier = Modifier
+                        .clickable { }
+                        .align(Alignment.Center)
+                        .clip(CircleShape)
+                        .background(colorBlue)
+                        .padding(vertical = 12.dp, horizontal = 15.dp),
+                    painter = painterResource(id = R.drawable.resource_switch),
+                    contentDescription = "switch currency"
+                )
 
             }
 
@@ -95,9 +131,14 @@ fun HomeScreen(navController: NavController) {
 
         }
 
-        Column(Modifier.weight(3f)) {
+        Column(Modifier.weight(3.5f)) {
             Text(text = "Indicative Exchange Rate", color = colorGray)
-            Text(text = "1 SDG = 0.7 USD", fontWeight = FontWeight.Medium, fontSize = 18.sp)
+            Text(
+                text = "1 SDG = 0.7 USD",
+                color = Color.Black,
+                fontWeight = FontWeight.Bold,
+                fontSize = 22.sp
+            )
         }
     }
 }
