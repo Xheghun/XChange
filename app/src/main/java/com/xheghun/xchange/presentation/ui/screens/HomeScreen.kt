@@ -58,7 +58,6 @@ import org.koin.androidx.compose.koinViewModel
 fun HomeScreen(navController: NavController) {
     val model = koinViewModel<HomeViewmodel>()
 
-    var value by remember { mutableStateOf("") }
     val baseCurrency = model.baseCurrency.collectAsStateWithLifecycle().value
     val exchangeCurrency = model.exchangeCurrency.collectAsStateWithLifecycle().value
 
@@ -99,8 +98,11 @@ fun HomeScreen(navController: NavController) {
         ) {
             Text("Amount", color = colorGray)
 
-            CurrencyLayout(currencyCode = baseCurrency, value = value) { newValue ->
-                value = newValue
+            CurrencyLayout(
+                currencyCode = baseCurrency,
+                value = model.baseCurrencyAmount.collectAsStateWithLifecycle().value
+            ) { newValue ->
+                model.updateBaseAmount(newValue)
             }
 
             Box(Modifier.fillMaxWidth()) {
@@ -127,17 +129,20 @@ fun HomeScreen(navController: NavController) {
 
             Text("Converted Amount", color = colorGray)
 
-            CurrencyLayout(currencyCode = exchangeCurrency, value = value) { newValue ->
-                value = newValue
+            CurrencyLayout(
+                readOnly = true,
+                currencyCode = exchangeCurrency,
+                value = model.exchangeCurrencyAmount.collectAsStateWithLifecycle().value
+            ) { newValue ->
+                model.updateExchangeAmount(newValue)
             }
-
         }
 
         //RESULT
         Column(Modifier.weight(3.5f)) {
             Text(text = "Indicative Exchange Rate", color = colorGray)
             Text(
-                text = "1 $baseCurrency = 0.7 $exchangeCurrency",
+                text = "1 $baseCurrency = ${model.exchangeTotal.collectAsStateWithLifecycle().value} $exchangeCurrency",
                 color = Color.Black,
                 fontWeight = FontWeight.Bold,
                 fontSize = 22.sp
@@ -149,6 +154,7 @@ fun HomeScreen(navController: NavController) {
 
 @Composable
 fun CurrencyLayout(
+    readOnly: Boolean = false,
     currencyCode: String,
     value: String,
     onValueChanged: (String) -> Unit
@@ -175,6 +181,7 @@ fun CurrencyLayout(
         Box(Modifier.width(10.dp))
 
         CurrencyInput(
+            readOnly = readOnly,
             value = value,
             onValueChanged = onValueChanged::invoke,
             modifier = Modifier.weight(1f)
@@ -183,10 +190,21 @@ fun CurrencyLayout(
 }
 
 @Composable
-fun CurrencyInput(value: String, onValueChanged: (String) -> Unit, modifier: Modifier) {
+fun CurrencyInput(
+    readOnly: Boolean,
+    value: String,
+    onValueChanged: (String) -> Unit,
+    modifier: Modifier
+) {
     BasicTextField(
         value = value,
         singleLine = true,
+        readOnly = readOnly,
+        textStyle = TextStyle(
+            fontFamily = OpenSans,
+            fontWeight = FontWeight.Medium,
+            fontSize = 18.sp
+        ),
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
         onValueChange = onValueChanged::invoke,
         decorationBox = { innerTextField ->
@@ -206,6 +224,6 @@ fun CurrencyInput(value: String, onValueChanged: (String) -> Unit, modifier: Mod
         modifier = modifier
             .clip(RoundedCornerShape(6.dp))
             .background(colorGrey)
-            .padding(vertical = 18.dp)
+            .padding(vertical = 15.dp, horizontal = 10.dp)
     )
 }

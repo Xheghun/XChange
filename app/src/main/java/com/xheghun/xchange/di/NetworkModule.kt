@@ -23,7 +23,7 @@ fun networkModule() = module {
 
             //add api key to every request
             val modifiedUrl = originalRequest.url.newBuilder()
-                .addQueryParameter("access_token", BuildConfig.EXCHANGE_API_KEY)
+                .addQueryParameter("access_key", BuildConfig.EXCHANGE_API_KEY)
                 .build()
 
             val modifiedRequest = originalRequest.newBuilder()
