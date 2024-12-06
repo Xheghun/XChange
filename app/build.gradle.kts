@@ -1,8 +1,17 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlinSerialization)
 }
+
+val credentialsPropFile = rootProject.file("credentials.properties")
+val credentials = Properties().apply {
+    load(credentialsPropFile.inputStream())
+}
+
+val exchangeApiKey = credentials["exchangeApiKey"] as String
 
 android {
     namespace = "com.xheghun.xchange"
@@ -19,6 +28,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField("String", "EXCHANGE_API_KEY", exchangeApiKey)
     }
 
     buildTypes {

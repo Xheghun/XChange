@@ -23,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +41,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.xheghun.xchange.R
 import com.xheghun.xchange.data.model.Currency
@@ -51,7 +55,13 @@ import com.xheghun.xchange.presentation.ui.theme.colorGrey
 
 @Composable
 fun HomeScreen(navController: NavController) {
+    val model = viewModel<HomeViewmodel>()
+
     var value by remember { mutableStateOf("") }
+    val baseCurrency = model.baseCurrency.collectAsStateWithLifecycle().value
+    val exchangeCurrency = model.exchangeCurrency.collectAsStateWithLifecycle().value
+
+
     Column(
         Modifier
             .background(colorBackground)
@@ -86,11 +96,9 @@ fun HomeScreen(navController: NavController) {
                 .fillMaxWidth()
                 .padding(15.dp)
         ) {
-            val baseCurrency = Currency()
-            val exchangeCurrency = Currency("GBP")
             Text("Amount", color = colorGray)
 
-            CurrencyLayout(currencyCode = baseCurrency.code, value = value) { newValue ->
+            CurrencyLayout(currencyCode = baseCurrency, value = value) { newValue ->
                 value = newValue
             }
 
@@ -106,7 +114,7 @@ fun HomeScreen(navController: NavController) {
 
                 Image(
                     modifier = Modifier
-                        .clickable { }
+                        .clickable { model.swapCurrencies() }
                         .align(Alignment.Center)
                         .clip(CircleShape)
                         .background(colorBlue)
@@ -114,12 +122,11 @@ fun HomeScreen(navController: NavController) {
                     painter = painterResource(id = R.drawable.resource_switch),
                     contentDescription = "switch currency"
                 )
-
             }
 
             Text("Converted Amount", color = colorGray)
 
-            CurrencyLayout(currencyCode = baseCurrency.code, value = value) { newValue ->
+            CurrencyLayout(currencyCode = exchangeCurrency, value = value) { newValue ->
                 value = newValue
             }
 
@@ -129,7 +136,7 @@ fun HomeScreen(navController: NavController) {
         Column(Modifier.weight(3.5f)) {
             Text(text = "Indicative Exchange Rate", color = colorGray)
             Text(
-                text = "1 SDG = 0.7 USD",
+                text = "1 $baseCurrency = 0.7 $exchangeCurrency",
                 color = Color.Black,
                 fontWeight = FontWeight.Bold,
                 fontSize = 22.sp
