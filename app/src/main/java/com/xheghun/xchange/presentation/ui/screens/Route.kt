@@ -1,4 +1,4 @@
-package com.xheghun.xchange.ui.screens
+package com.xheghun.xchange.presentation.ui.screens
 
 import kotlinx.serialization.Serializable
 

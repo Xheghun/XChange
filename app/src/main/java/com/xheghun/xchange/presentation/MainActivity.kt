@@ -1,4 +1,4 @@
-package com.xheghun.xchange
+package com.xheghun.xchange.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -13,9 +13,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.xheghun.xchange.ui.screens.Home
-import com.xheghun.xchange.ui.screens.HomeScreen
-import com.xheghun.xchange.ui.theme.XChangeTheme
+import com.xheghun.xchange.presentation.ui.screens.Home
+import com.xheghun.xchange.presentation.ui.screens.HomeScreen
+import com.xheghun.xchange.presentation.ui.theme.XChangeTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

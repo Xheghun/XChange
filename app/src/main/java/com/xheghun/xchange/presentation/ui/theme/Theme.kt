@@ -1,4 +1,4 @@
-package com.xheghun.xchange.ui.theme
+package com.xheghun.xchange.presentation.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

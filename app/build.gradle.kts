@@ -57,6 +57,17 @@ dependencies {
     //serialization
     implementation(libs.kotlinx.serialization.json)
 
+    //DI
+    implementation(libs.koin.core)
+    implementation(libs.koin.compose)
+    implementation(libs.koin.android)
+
+    //NETWORK
+    implementation(libs.squareup.retrofit)
+    implementation(libs.squareup.okhttp)
+    implementation(libs.squareup.gson)
+    implementation(libs.squareup.logging.interceptor)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

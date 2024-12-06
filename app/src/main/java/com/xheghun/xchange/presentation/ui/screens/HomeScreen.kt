@@ -1,4 +1,4 @@
-package com.xheghun.xchange.ui.screens
+package com.xheghun.xchange.presentation.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,19 +13,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,11 +43,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.xheghun.xchange.R
 import com.xheghun.xchange.data.model.Currency
-import com.xheghun.xchange.ui.theme.OpenSans
-import com.xheghun.xchange.ui.theme.colorBackground
-import com.xheghun.xchange.ui.theme.colorBlue
-import com.xheghun.xchange.ui.theme.colorGray
-import com.xheghun.xchange.ui.theme.colorGrey
+import com.xheghun.xchange.presentation.ui.theme.OpenSans
+import com.xheghun.xchange.presentation.ui.theme.colorBackground
+import com.xheghun.xchange.presentation.ui.theme.colorBlue
+import com.xheghun.xchange.presentation.ui.theme.colorGray
+import com.xheghun.xchange.presentation.ui.theme.colorGrey
 
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -201,6 +198,6 @@ fun CurrencyInput(value: String, onValueChanged: (String) -> Unit, modifier: Mod
         modifier = modifier
             .clip(RoundedCornerShape(6.dp))
             .background(colorGrey)
-            .padding(vertical = 10.dp)
+            .padding(vertical = 18.dp)
     )
 }
