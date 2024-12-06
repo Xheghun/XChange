@@ -13,12 +13,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -61,6 +65,11 @@ fun HomeScreen(navController: NavController) {
     val baseCurrency = model.baseCurrency.collectAsStateWithLifecycle().value
     val exchangeCurrency = model.exchangeCurrency.collectAsStateWithLifecycle().value
 
+    val currencies =
+        model.exchangeResult.collectAsStateWithLifecycle().value?.rates?.keys?.toList() ?: listOf()
+
+    var baseOptionsVisible by remember { mutableStateOf(false) }
+    var exchangeOptionsVisible by remember { mutableStateOf(false) }
 
     Column(
         Modifier
@@ -100,11 +109,30 @@ fun HomeScreen(navController: NavController) {
 
             CurrencyLayout(
                 currencyCode = baseCurrency,
-                value = model.baseCurrencyAmount.collectAsStateWithLifecycle().value
-            ) { newValue ->
-                model.updateBaseAmount(newValue)
-            }
+                value = model.baseCurrencyAmount.collectAsStateWithLifecycle().value,
+                onValueChanged = { newValue ->
+                    model.updateBaseAmount(newValue)
+                },
+                onDropdownClicked = {
+                    baseOptionsVisible = true
+                }
+            )
 
+            DropdownMenu(
+                expanded = baseOptionsVisible,
+                modifier = Modifier.height(250.dp),
+                onDismissRequest = { baseOptionsVisible = false },
+            ) {
+                currencies.filter { it != model.baseCurrency.value }.forEach { cur ->
+                    DropdownMenuItem(
+                        text = { Text(text = cur) },
+                        onClick = {
+                            exchangeOptionsVisible = false
+                            model.updateExchangeCurrency(cur)
+                        }
+                    )
+                }
+            }
             Box(Modifier.fillMaxWidth()) {
 
                 Box(
@@ -132,9 +160,26 @@ fun HomeScreen(navController: NavController) {
             CurrencyLayout(
                 readOnly = true,
                 currencyCode = exchangeCurrency,
-                value = model.exchangeCurrencyAmount.collectAsStateWithLifecycle().value
-            ) { newValue ->
-                model.updateExchangeAmount(newValue)
+                value = model.exchangeCurrencyAmount.collectAsStateWithLifecycle().value,
+                onValueChanged = { newValue ->
+                    model.updateExchangeAmount(newValue)
+                },
+                onDropdownClicked = { exchangeOptionsVisible = true }
+
+            )
+
+            DropdownMenu(
+                expanded = exchangeOptionsVisible,
+                modifier = Modifier.height(250.dp),
+                onDismissRequest = { exchangeOptionsVisible = false }) {
+                currencies.filter { it != model.exchangeCurrency.value }.forEach {
+                    DropdownMenuItem(
+                        text = { Text(text = it) },
+                        onClick = {
+                            exchangeOptionsVisible = false
+                            model.updateExchangeCurrency(it)
+                        })
+                }
             }
         }
 
@@ -157,27 +202,38 @@ fun CurrencyLayout(
     readOnly: Boolean = false,
     currencyCode: String,
     value: String,
-    onValueChanged: (String) -> Unit
+    onValueChanged: (String) -> Unit,
+    onDropdownClicked: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(vertical = 10.dp)
+        modifier = Modifier
+            .padding(vertical = 10.dp)
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_launcher_background),
-            contentDescription = "base currency image",
+
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .clip(CircleShape)
-                .size(40.dp)
-        )
-        Box(Modifier.width(10.dp))
-        Text(
-            text = currencyCode,
-            color = colorBlue,
-            fontSize = 18.sp,
-            style = TextStyle(fontFamily = OpenSans, fontWeight = FontWeight.Medium)
-        )
-        Icon(Icons.Default.KeyboardArrowDown, contentDescription = "")
+                .clip(RoundedCornerShape(4.dp))
+                .padding(all = 4.dp)
+                .clickable { onDropdownClicked.invoke() }) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_launcher_background),
+                contentDescription = "base currency image",
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(40.dp)
+            )
+            Box(Modifier.width(10.dp))
+            Text(
+                text = currencyCode,
+                color = colorBlue,
+                fontSize = 18.sp,
+                style = TextStyle(fontFamily = OpenSans, fontWeight = FontWeight.Medium)
+            )
+            Icon(Icons.Default.KeyboardArrowDown, contentDescription = "")
+        }
         Box(Modifier.width(10.dp))
 
         CurrencyInput(

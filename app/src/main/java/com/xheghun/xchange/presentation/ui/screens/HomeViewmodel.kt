@@ -7,7 +7,6 @@ import com.xheghun.xchange.data.repo.ExchangeRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlin.time.toDuration
 
 class HomeViewmodel(private val exchangeRepo: ExchangeRepository) : ViewModel() {
 
@@ -32,6 +31,21 @@ class HomeViewmodel(private val exchangeRepo: ExchangeRepository) : ViewModel() 
 
     private val _exchangeCurrencyAmount = MutableStateFlow("1")
     val exchangeCurrencyAmount = _exchangeCurrencyAmount.asStateFlow()
+
+
+    fun updateBaseCurrency(value: String) {
+        if (value.isNotEmpty()) {
+            _baseCurrency.value = value
+            calculateExchange()
+        }
+    }
+
+    fun updateExchangeCurrency(value: String) {
+        if (value.isNotEmpty()) {
+            _exchangeCurrency.value = value
+            calculateExchange()
+        }
+    }
 
     fun updateBaseAmount(value: String) {
         if (value.isNotEmpty()) {
