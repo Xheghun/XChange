@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class HomeViewmodel : ViewModel() {
+class HomeViewmodel(private val exchangeRepo: ExchangeRepository) : ViewModel() {
     private val _exchangeResult = MutableStateFlow<ExchangeResult?>(null)
     val exchangeResult = _exchangeResult.asStateFlow()
 
@@ -23,14 +23,14 @@ class HomeViewmodel : ViewModel() {
     }
 
     private fun getExchange() {
-//        viewModelScope.launch {
-//            exchangeRepo.getExchange().onSuccess {
-//                _exchangeResult.value = it
-//
-//                _baseCurrency.value = it.rates.keys.elementAt(0)
-//                _exchangeCurrency.value = it.rates.keys.elementAt(1)
-//            }
-//        }
+        viewModelScope.launch {
+            exchangeRepo.getExchange().onSuccess {
+                _exchangeResult.value = it
+
+                _baseCurrency.value = it.rates.keys.elementAt(0)
+                _exchangeCurrency.value = it.rates.keys.elementAt(1)
+            }
+        }
     }
 
     fun swapCurrencies() {

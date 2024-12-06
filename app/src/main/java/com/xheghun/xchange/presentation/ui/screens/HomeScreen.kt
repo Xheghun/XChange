@@ -52,10 +52,11 @@ import com.xheghun.xchange.presentation.ui.theme.colorBackground
 import com.xheghun.xchange.presentation.ui.theme.colorBlue
 import com.xheghun.xchange.presentation.ui.theme.colorGray
 import com.xheghun.xchange.presentation.ui.theme.colorGrey
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(navController: NavController) {
-    val model = viewModel<HomeViewmodel>()
+    val model = koinViewModel<HomeViewmodel>()
 
     var value by remember { mutableStateOf("") }
     val baseCurrency = model.baseCurrency.collectAsStateWithLifecycle().value
