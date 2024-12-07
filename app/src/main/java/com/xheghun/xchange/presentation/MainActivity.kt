@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable<Home> {
-                            HomeScreen(navController)
+                            HomeScreen()
                         }
                     }
                 }
@@ -45,6 +45,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     XChangeTheme {
-        HomeScreen(rememberNavController())
+        HomeScreen()
     }
 }

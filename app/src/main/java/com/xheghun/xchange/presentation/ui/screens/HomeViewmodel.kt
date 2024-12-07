@@ -23,52 +23,46 @@ class HomeViewmodel(private val exchangeRepo: ExchangeRepository) : ViewModel() 
     private val _exchangeTotal = MutableStateFlow("0.0")
     val exchangeTotal = _exchangeTotal.asStateFlow()
 
-    private val _baseCurrency = MutableStateFlow("USD")
-    val baseCurrency = _baseCurrency.asStateFlow()
+    private val _baseCurrencyState =
+        CurrencyState(
+            MutableStateFlow("USD"),
+            MutableStateFlow("1"),
+        )
 
-    private val _exchangeCurrency = MutableStateFlow("EUR")
-    val exchangeCurrency = _exchangeCurrency.asStateFlow()
+    private val _exchangeCurrencyState =
+        CurrencyState(
+            MutableStateFlow("EUR"),
+            MutableStateFlow("1"),
+        )
 
-    private val _baseCurrencyAmount = MutableStateFlow("1")
-    val baseCurrencyAmount = _baseCurrencyAmount.asStateFlow()
 
-    private val _exchangeCurrencyAmount = MutableStateFlow("1")
-    val exchangeCurrencyAmount = _exchangeCurrencyAmount.asStateFlow()
+    val baseCurrency = _baseCurrencyState.currency.asStateFlow()
+    val exchangeCurrency = _exchangeCurrencyState.currency.asStateFlow()
+
+    val baseCurrencyAmount = _baseCurrencyState.amount.asStateFlow()
+    val exchangeCurrencyAmount = _exchangeCurrencyState.amount.asStateFlow()
 
 
     fun updateBaseCurrency(value: String) {
         if (value.isNotEmpty()) {
-            _baseCurrency.value = value
+            _baseCurrencyState.currency.value = value
             calculateExchange()
         }
     }
 
     fun updateExchangeCurrency(value: String) {
         if (value.isNotEmpty()) {
-            _exchangeCurrency.value = value
+            _exchangeCurrencyState.currency.value = value
             calculateExchange()
         }
     }
 
-    fun updateBaseAmount(value: String) = updateAmount(value, _baseCurrencyAmount)
-    fun updateExchangeAmount(value: String) = updateAmount(value, _exchangeCurrencyAmount)
-
-    private fun getExchange() {
-        viewModelScope.launch {
-            exchangeRepo.getExchange().onSuccess {
-                _exchangeResult.value = it
-
-                _baseCurrency.value = it.rates.keys.elementAt(0)
-                _exchangeCurrency.value = it.rates.keys.elementAt(1)
-
-                calculateExchange()
-            }
-        }
-    }
+    fun updateBaseAmount(value: String) = updateAmount(value, _baseCurrencyState.amount)
+    fun updateExchangeAmount(value: String) = updateAmount(value, _exchangeCurrencyState.amount)
 
     fun swapCurrencies() {
-        _baseCurrency.value = _exchangeCurrency.value.also {
-            _exchangeCurrency.value = _baseCurrency.value
+        _baseCurrencyState.currency.value = _exchangeCurrencyState.currency.value.also {
+            _exchangeCurrencyState.currency.value = _baseCurrencyState.currency.value
         }
 
         calculateExchange()
@@ -81,6 +75,19 @@ class HomeViewmodel(private val exchangeRepo: ExchangeRepository) : ViewModel() 
         }
     }
 
+    private fun getExchange() {
+        viewModelScope.launch {
+            exchangeRepo.getExchange().onSuccess {
+                _exchangeResult.value = it
+
+                _baseCurrencyState.currency.value = it.rates.keys.elementAt(0)
+                _exchangeCurrencyState.currency.value = it.rates.keys.elementAt(1)
+
+                calculateExchange()
+            }
+        }
+    }
+
     private fun calculateExchange() {
         _exchangeResult.value?.rates?.let { rates ->
             val baseRate = rates[baseCurrency.value]
@@ -88,10 +95,10 @@ class HomeViewmodel(private val exchangeRepo: ExchangeRepository) : ViewModel() 
 
             if (baseRate != null && exchangeRate != null) {
                 val conversionRate = exchangeRate / baseRate
-                val result = (baseCurrencyAmount.value.toDouble() * conversionRate).format()
+                val result = (_baseCurrencyState.amount.value.toDouble() * conversionRate).format()
 
                 _exchangeTotal.value = result
-                _exchangeCurrencyAmount.value = result
+                _exchangeCurrencyState.amount.value = result
             }
         }
     }
