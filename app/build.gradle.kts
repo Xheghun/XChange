@@ -80,6 +80,9 @@ dependencies {
     implementation(libs.squareup.gson)
     implementation(libs.squareup.logging.interceptor)
 
+    //CACHE
+    implementation(libs.androidx.datastore)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

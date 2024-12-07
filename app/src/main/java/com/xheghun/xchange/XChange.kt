@@ -17,12 +17,14 @@ class XChange : Application() {
         startKoin {
             androidLogger()
             androidContext(this@XChange)
-            modules(listOf(
-                appModule(),
-                viewModelModule(),
-                cacheModule(),
-                networkModule()
-            ))
+            modules(
+                listOf(
+                    appModule(),
+                    viewModelModule(),
+                    cacheModule(this@XChange),
+                    networkModule()
+                )
+            )
         }
     }
 }

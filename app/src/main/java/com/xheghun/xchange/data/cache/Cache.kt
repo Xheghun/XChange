@@ -1,6 +1,7 @@
 package com.xheghun.xchange.data.cache
 
 interface Cache<T> {
-    fun get(): T?
-    fun put(key: String, value: T)
+    suspend fun get(key: String): T?
+    suspend fun put(key: String, value: T)
+    suspend fun remove(key: String)
 }

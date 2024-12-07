@@ -13,6 +13,7 @@ kotlinx-serialization = "1.6.0"
 koinVersion = '3.6.0-wasm-alpha2'
 squareupVersion = "2.6.2"
 okhttpVersion = "4.11.0"
+datastoreVersion = "1.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -38,8 +39,7 @@ squareup-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", versi
 squareup-okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttpVersion" }
 squareup-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "squareupVersion" }
 squareup-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttpVersion" }
-
-
+androidx-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastoreVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
