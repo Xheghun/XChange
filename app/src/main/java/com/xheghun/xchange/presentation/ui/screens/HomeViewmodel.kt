@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+private val numberFormat = DecimalFormat("#,###.###")
+
 class HomeViewmodel(private val exchangeRepo: ExchangeRepository) : ViewModel() {
 
     init {
@@ -48,19 +50,8 @@ class HomeViewmodel(private val exchangeRepo: ExchangeRepository) : ViewModel() 
         }
     }
 
-    fun updateBaseAmount(value: String) {
-        if (value.isNotEmpty()) {
-            _baseCurrencyAmount.value = value.toInt().coerceAtLeast(1).toString()
-            calculateExchange()
-        }
-    }
-
-    fun updateExchangeAmount(value: String) {
-        if (value.isNotEmpty()) {
-            _exchangeCurrencyAmount.value = value.toInt().coerceAtLeast(1).toString()
-            calculateExchange()
-        }
-    }
+    fun updateBaseAmount(value: String) = updateAmount(value, _baseCurrencyAmount)
+    fun updateExchangeAmount(value: String) = updateAmount(value, _exchangeCurrencyAmount)
 
     private fun getExchange() {
         viewModelScope.launch {
@@ -83,6 +74,13 @@ class HomeViewmodel(private val exchangeRepo: ExchangeRepository) : ViewModel() 
         calculateExchange()
     }
 
+    private fun updateAmount(value: String, updater: MutableStateFlow<String>) {
+        if (value.isNotEmpty()) {
+            updater.value = value.toInt().coerceAtLeast(1).toString()
+            calculateExchange()
+        }
+    }
+
     private fun calculateExchange() {
         _exchangeResult.value?.rates?.let { rates ->
             val baseRate = rates[baseCurrency.value]
@@ -101,7 +99,6 @@ class HomeViewmodel(private val exchangeRepo: ExchangeRepository) : ViewModel() 
 
 fun Any.format(): String {
     return try {
-        val numberFormat = DecimalFormat("#,###.###")
         numberFormat.format(this)
     } catch (e: Exception) {
         this.toString()
