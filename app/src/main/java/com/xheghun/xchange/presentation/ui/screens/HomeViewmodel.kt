@@ -1,5 +1,6 @@
 package com.xheghun.xchange.presentation.ui.screens
 
+import android.icu.text.DecimalFormat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.xheghun.xchange.data.model.ExchangeResult
@@ -13,6 +14,8 @@ class HomeViewmodel(private val exchangeRepo: ExchangeRepository) : ViewModel() 
     init {
         getExchange()
     }
+
+    private val numberFormat = DecimalFormat("#,###.###")
 
     private val _exchangeResult = MutableStateFlow<ExchangeResult?>(null)
     val exchangeResult = _exchangeResult.asStateFlow()
@@ -49,14 +52,15 @@ class HomeViewmodel(private val exchangeRepo: ExchangeRepository) : ViewModel() 
 
     fun updateBaseAmount(value: String) {
         if (value.isNotEmpty()) {
-            _baseCurrencyAmount.value = value.toInt().coerceAtLeast(1).toString()
+            _baseCurrencyAmount.value =
+                numberFormat.format(value.toInt().coerceAtLeast(1))
             calculateExchange()
         }
     }
 
     fun updateExchangeAmount(value: String) {
         if (value.isNotEmpty()) {
-            _exchangeCurrencyAmount.value = value.toInt().coerceAtLeast(1).toString()
+            _exchangeCurrencyAmount.value = numberFormat.format(value.toInt().coerceAtLeast(1))
             calculateExchange()
         }
     }
@@ -89,13 +93,12 @@ class HomeViewmodel(private val exchangeRepo: ExchangeRepository) : ViewModel() 
 
             if (baseRate != null && exchangeRate != null) {
                 val conversionRate = exchangeRate / baseRate
-                val result = "%.3f".format(baseCurrencyAmount.value.toDouble() * conversionRate)
+                val result =
+                    numberFormat.format(baseCurrencyAmount.value.toDouble() * conversionRate)
 
                 _exchangeTotal.value = result
                 _exchangeCurrencyAmount.value = result
             }
         }
     }
-
-
 }

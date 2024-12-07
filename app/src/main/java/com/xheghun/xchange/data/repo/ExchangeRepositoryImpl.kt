@@ -12,8 +12,7 @@ private val COROUTINE_CONTEXT = Dispatchers.IO
 class ExchangeRepositoryImpl(
     private val exchangeService: ExchangeApiService,
     private val cache: Cache<ExchangeResult>
-) :
-    ExchangeRepository {
+) : ExchangeRepository {
     override suspend fun getExchange(): Result<ExchangeResult> =
         withContext(COROUTINE_CONTEXT) {
             runCatching {

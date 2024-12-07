@@ -123,12 +123,12 @@ fun HomeScreen(navController: NavController) {
                 modifier = Modifier.height(250.dp),
                 onDismissRequest = { baseOptionsVisible = false },
             ) {
-                currencies.filter { it != model.baseCurrency.value }.forEach { cur ->
+                currencies.filter { it != model.baseCurrency.value }.forEach { baseSymbol ->
                     DropdownMenuItem(
-                        text = { Text(text = cur) },
+                        text = { Text(text = baseSymbol) },
                         onClick = {
-                            exchangeOptionsVisible = false
-                            model.updateExchangeCurrency(cur)
+                            baseOptionsVisible = false
+                            model.updateBaseCurrency(baseSymbol)
                         }
                     )
                 }
@@ -165,19 +165,18 @@ fun HomeScreen(navController: NavController) {
                     model.updateExchangeAmount(newValue)
                 },
                 onDropdownClicked = { exchangeOptionsVisible = true }
-
             )
 
             DropdownMenu(
                 expanded = exchangeOptionsVisible,
                 modifier = Modifier.height(250.dp),
                 onDismissRequest = { exchangeOptionsVisible = false }) {
-                currencies.filter { it != model.exchangeCurrency.value }.forEach {
+                currencies.filter { it != model.exchangeCurrency.value }.forEach {exchangeSymbol ->
                     DropdownMenuItem(
-                        text = { Text(text = it) },
+                        text = { Text(text = exchangeSymbol) },
                         onClick = {
                             exchangeOptionsVisible = false
-                            model.updateExchangeCurrency(it)
+                            model.updateExchangeCurrency(exchangeSymbol)
                         })
                 }
             }
