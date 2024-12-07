@@ -109,7 +109,7 @@ fun HomeScreen(navController: NavController) {
 
             CurrencyLayout(
                 currencyCode = baseCurrency,
-                value = model.baseCurrencyAmount.collectAsStateWithLifecycle().value,
+                value = model.baseCurrencyAmount.collectAsStateWithLifecycle().value.format(),
                 onValueChanged = { newValue ->
                     model.updateBaseAmount(newValue)
                 },
@@ -160,7 +160,7 @@ fun HomeScreen(navController: NavController) {
             CurrencyLayout(
                 readOnly = true,
                 currencyCode = exchangeCurrency,
-                value = model.exchangeCurrencyAmount.collectAsStateWithLifecycle().value,
+                value = model.exchangeCurrencyAmount.collectAsStateWithLifecycle().value.format(),
                 onValueChanged = { newValue ->
                     model.updateExchangeAmount(newValue)
                 },

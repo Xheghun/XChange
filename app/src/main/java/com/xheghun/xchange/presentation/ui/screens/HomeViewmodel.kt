@@ -15,8 +15,6 @@ class HomeViewmodel(private val exchangeRepo: ExchangeRepository) : ViewModel() 
         getExchange()
     }
 
-    private val numberFormat = DecimalFormat("#,###.###")
-
     private val _exchangeResult = MutableStateFlow<ExchangeResult?>(null)
     val exchangeResult = _exchangeResult.asStateFlow()
 
@@ -52,15 +50,14 @@ class HomeViewmodel(private val exchangeRepo: ExchangeRepository) : ViewModel() 
 
     fun updateBaseAmount(value: String) {
         if (value.isNotEmpty()) {
-            _baseCurrencyAmount.value =
-                numberFormat.format(value.toInt().coerceAtLeast(1))
+            _baseCurrencyAmount.value = value.toInt().coerceAtLeast(1).toString()
             calculateExchange()
         }
     }
 
     fun updateExchangeAmount(value: String) {
         if (value.isNotEmpty()) {
-            _exchangeCurrencyAmount.value = numberFormat.format(value.toInt().coerceAtLeast(1))
+            _exchangeCurrencyAmount.value = value.toInt().coerceAtLeast(1).toString()
             calculateExchange()
         }
     }
@@ -93,12 +90,20 @@ class HomeViewmodel(private val exchangeRepo: ExchangeRepository) : ViewModel() 
 
             if (baseRate != null && exchangeRate != null) {
                 val conversionRate = exchangeRate / baseRate
-                val result =
-                    numberFormat.format(baseCurrencyAmount.value.toDouble() * conversionRate)
+                val result = (baseCurrencyAmount.value.toDouble() * conversionRate).format()
 
                 _exchangeTotal.value = result
                 _exchangeCurrencyAmount.value = result
             }
         }
+    }
+}
+
+fun Any.format(): String {
+    return try {
+        val numberFormat = DecimalFormat("#,###.###")
+        numberFormat.format(this)
+    } catch (e: Exception) {
+        this.toString()
     }
 }
