@@ -164,7 +164,7 @@ fun HomeScreen() {
                 expanded = exchangeOptionsVisible,
                 modifier = Modifier.height(250.dp),
                 onDismissRequest = { exchangeOptionsVisible = false }) {
-                currencies.filter { it != model.exchangeCurrency.value }.forEach {exchangeSymbol ->
+                currencies.filter { it != model.exchangeCurrency.value }.forEach { exchangeSymbol ->
                     DropdownMenuItem(
                         text = { Text(text = exchangeSymbol) },
                         onClick = {
@@ -179,7 +179,7 @@ fun HomeScreen() {
         Column(Modifier.weight(3.5f)) {
             Text(text = "Indicative Exchange Rate", color = colorGray)
             Text(
-                text = "1 $baseCurrency = ${model.exchangeTotal.collectAsStateWithLifecycle().value} $exchangeCurrency",
+                text = "${model.baseCurrencyAmount.collectAsStateWithLifecycle().value} $baseCurrency = ${model.exchangeTotal.collectAsStateWithLifecycle().value} $exchangeCurrency",
                 color = Color.Black,
                 fontWeight = FontWeight.Bold,
                 fontSize = 22.sp
